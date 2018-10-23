@@ -1,5 +1,5 @@
 import pymysql
-
+server_port = 5000
 baseurl = 'http://127.0.0.1:5000'
 db_cfg = dict(host='localhost',
               user='bloxappuser',

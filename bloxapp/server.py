@@ -5,6 +5,7 @@ from flask import request
 from datetime import datetime
 import json
 import logging
+import cfg
 
 app = Flask(__name__)
 
@@ -39,4 +40,4 @@ if __name__ == '__main__':
     handler.setLevel(logging.DEBUG)
     app.logger.addHandler(handler)
     app.logger.setLevel(logging.INFO)
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=False, host='0.0.0.0', port=cfg.server_port)
