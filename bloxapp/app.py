@@ -6,6 +6,7 @@ import cfg
 import logging
 import time
 import sys
+import json
 
 if sys.version_info >= (3,0):
     pass
@@ -14,7 +15,7 @@ else:
     
     
 logging.basicConfig(filename='app.log',level=logging.DEBUG)
-logging.getLogger().addHandler(logging.StreamHandler())
+# logging.getLogger().addHandler(logging.StreamHandler())
 
 cursor = pymysql.connect(**cfg.db_cfg).cursor()
 
@@ -39,13 +40,13 @@ def exit():
     raise ExitRequest()
     
 def last(measure):
-    cursor.execute('''SELECT val as VAL FROM bloxapp.metrics WHERE measure = %s ORDER BY id DESC LIMIT 1''' , measure )
+    cursor.execute('''SELECT val as last FROM bloxapp.metrics WHERE measure = %s ORDER BY id DESC LIMIT 1''' , measure )
     row = cursor.fetchone()
     logging.getLogger('app').debug([row])
     return row
     
 def avg(measure,samples = 1):
-    cursor.execute('''SELECT AVG(val) as AVG FROM (SELECT measure,val FROM bloxapp.metrics WHERE measure = %s ORDER BY id DESC LIMIT %s) temp''' ,
+    cursor.execute('''SELECT AVG(val) as avg FROM (SELECT measure,val FROM bloxapp.metrics WHERE measure = %s ORDER BY id DESC LIMIT %s) temp''' ,
         (measure,int(samples) )
         )
     row = cursor.fetchone()
@@ -67,7 +68,7 @@ if __name__ == '__main__':
         try:
             res = locals().get(params.pop('action'))(**params)
             if res:
-                print('>>>',res)
+                print('>>>',json.dumps(res))
                 
         except ExitRequest as e:
             break
